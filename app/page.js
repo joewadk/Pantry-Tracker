@@ -224,7 +224,7 @@ export default function Home() {
                 display="flex"
                 alignItems={"center"}
                 justifyContent={"space-between"}
-                bgColor={"#f0f0f0"}
+                bgcolor={"#f0f0f0"}
                 padding={5}
               >
                 <Typography variant='h3'
