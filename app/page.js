@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { firestore } from '@/firebase'
 import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
-import { collection, doc, deleteDoc, getDocs, query, setDoc, getDoc } from "firebase/firestore";
+import { collection, doc, deleteDoc, getDocs, query, setDoc, getDoc, writeBatch } from "firebase/firestore";
 
 export default function Home() {
   const [inventory, setInventory] = useState([]);
@@ -50,6 +50,18 @@ export default function Home() {
     } else {
       await setDoc(docRef, { quantity: 1 });
     }
+    await updateInventory();
+  }
+
+  const emptyCart = async () => {
+    const snapshot = query(collection(firestore, 'inventory'));
+    const docs = await getDocs(snapshot);
+    const batch = writeBatch(firestore);
+    docs.forEach((doc) => {
+      const docRef = doc.ref;
+      batch.delete(docRef);
+    });
+    await batch.commit();
     await updateInventory();
   }
 
@@ -192,6 +204,9 @@ export default function Home() {
           handleSearchOpen()
         }}>
           Search Item
+        </Button>
+        <Button variant='contained' onClick={emptyCart}>
+          Empty Cart
         </Button>
       </Stack>
       <Box border={"1px solid #333"}>
