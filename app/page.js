@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { firestore } from '@/firebase'
 import { Box, Button, Modal, Stack, TextField, Typography } from "@mui/material";
 import { collection, doc, deleteDoc, getDocs, query, setDoc, getDoc, writeBatch } from "firebase/firestore";
+import { getResponse } from './api/route'; 
 
 export default function Home() {
   const [inventory, setInventory] = useState([]);
@@ -12,6 +13,7 @@ export default function Home() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
+  const [aiResponse, setAiResponse] = useState(''); 
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -68,6 +70,16 @@ export default function Home() {
   const searchItem = () => {
     const result = inventory.find(item => item.name.toLowerCase() === searchQuery.toLowerCase());
     setSearchResult(result || null);
+  }
+
+  const generateAIResponse = async () => {
+    if (inventory.length > 0) {
+      const prompt = `You are an expert chef with 2000 years of experience. Based on the user's pantry items: ${inventory.map(item => item.name).join(', ')}, what recipes can be made? Please keep this response to a minimum within concise numbered steps.`;
+      const response = await getResponse(prompt);
+      setAiResponse(response);
+    } else {
+      setAiResponse("Your inventory is empty!");
+    }
   }
 
   useEffect(() => {
@@ -195,20 +207,27 @@ export default function Home() {
         </Box></Modal>
 
       <Stack direction='row' spacing={2}>
-        <Button variant='contained' onClick={() => {
-          handleOpen()
-        }}>
+        <Button variant='contained' onClick={handleOpen}>
           Add New Item
         </Button>
-        <Button variant='contained' onClick={() => {
-          handleSearchOpen()
-        }}>
+        <Button variant='contained' onClick={handleSearchOpen}>
           Search Item
         </Button>
         <Button variant='contained' onClick={emptyCart}>
           Empty Cart
         </Button>
+        <Button variant='contained' onClick={generateAIResponse}>
+          Generate Recipe
+        </Button>
       </Stack>
+
+      {aiResponse && (
+        <Box mt={4} p={3} bgcolor={"#f0f0f0"} borderRadius={2} maxWidth={"800px"}>
+          <Typography variant="h6" color='#333'>Chef Kabir Says:</Typography>
+          <Typography variant="body1" color='#333'>{aiResponse}</Typography>
+        </Box>
+      )}
+
       <Box border={"1px solid #333"}>
         <Box width="800px" height="100px" bgcolor={"#ADD8E6"} display={'flex'} alignItems={'center'} justifyContent={'center'}>
           <Typography variant="h2" color='#333'>Inventory Items</Typography>
@@ -251,5 +270,6 @@ export default function Home() {
             ))}
         </Stack>
       </Box>
-    </Box>);
+    </Box>
+  );
 }
