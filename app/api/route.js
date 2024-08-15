@@ -2,7 +2,6 @@ import OpenAI, {Configuration, OpenAIApi} from "openai"
 const path = require('path');
 const dotenvPath = path.resolve(__dirname, '../.env');
 require('dotenv').config({ path: dotenvPath });
-console.log("API Key:", process.env.NEXT_PUBLIC_OPENAI_API_KEY);
 
 
 
