@@ -2,7 +2,7 @@ import OpenAI, {Configuration, OpenAIApi} from "openai"
 const path = require('path');
 const dotenvPath = path.resolve(__dirname, '../.env');
 require('dotenv').config({ path: dotenvPath });
-console.log("API Key:", process.env.OPENAI_API_KEY);
+console.log("API Key:", process.env.NEXT_PUBLIC_OPENAI_API_KEY);
 
 
 
@@ -31,7 +31,7 @@ client
 
  //artifact 2
 const openAIClient=new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY, dangerouslyAllowBrowser: true
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, dangerouslyAllowBrowser: true
 });
 async function getResponse(prompt){
     try{
