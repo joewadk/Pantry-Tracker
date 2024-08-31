@@ -1,7 +1,7 @@
 import OpenAI, {Configuration, OpenAIApi} from "openai"
-require("dotenv").config();
-import axios from 'axios';
-const apikey= process.env.OPENAI_API_KEY
+const path = require('path');
+const dotenvPath = path.resolve(__dirname, '../.env');
+require('dotenv').config({ path: dotenvPath });
 
 
 
@@ -30,7 +30,7 @@ client
 
  //artifact 2
 const openAIClient=new OpenAI({
-    apiKey: apikey, dangerouslyAllowBrowser: true
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, dangerouslyAllowBrowser: true
 });
 async function getResponse(prompt){
     try{
